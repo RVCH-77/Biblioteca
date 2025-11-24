@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/server/app.js",
+  "type": "module",
   "scripts": {
     "start": "node src/server/app.js",
     "dev": "nodemon src/server/app.js",
