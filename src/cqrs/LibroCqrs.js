@@ -1,3 +1,7 @@
+import pool from '../db/DB.js'
+
+
+
 export async function insertLibro(libro) {
   const sql = 'INSERT INTO Libro (nombre, genero, portada, pdf) VALUES (?, ?, ?, ?)'
   const [result] = await pool.execute(sql, [libro.nombre, libro.genero, libro.portada, libro.pdf])

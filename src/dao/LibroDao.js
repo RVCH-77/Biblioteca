@@ -1,3 +1,4 @@
+import pool from '../db/DB.js'
 
 
 export async function getLibroById(id) {
