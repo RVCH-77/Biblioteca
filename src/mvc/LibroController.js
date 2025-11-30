@@ -107,7 +107,9 @@ async function getLibroByIdController(req, res) {
 
 async function listLibrosController(req, res) {
   try {
-    const libros = await listLibros()
+    const qn = (req.query?.nombre || '').toLowerCase()
+    const all = await listLibros()
+    const libros = qn ? all.filter(l => (l.nombre || '').toLowerCase().includes(qn)) : all
     for (const libro of libros) {
       libro.portada = await ensureBase64(libro.portada)
       libro.pdf = await ensureBase64(libro.pdf)
@@ -123,7 +125,9 @@ export {
   updateLibroController,
   getLibroByIdController,
   listLibrosController,
-  deleteLibroController
+  deleteLibroController,
+  searchLibrosController
+  
 }
 
 async function deleteLibroController(req, res) {
@@ -140,3 +144,18 @@ async function deleteLibroController(req, res) {
   }
 }
 
+//Busca libros por nombre
+async function searchLibrosController(req, res) {
+  const nombre = (req.params?.nombre || req.query?.nombre || '').toLowerCase()
+  try {
+    const todos = await listLibros()
+    const libros = todos.filter(l => (l.nombre || '').toLowerCase().includes(nombre))
+    for (const libro of libros) {
+      libro.portada = await ensureBase64(libro.portada)
+      libro.pdf = await ensureBase64(libro.pdf)
+    }
+    res.status(200).json(libros)
+  } catch (error) {
+    res.status(500).json({ error: 'Error al buscar los libros' })
+  }
+}

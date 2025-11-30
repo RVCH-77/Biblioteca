@@ -1,7 +1,7 @@
 // routes libro
 import express from 'express'
 import multer from 'multer'
-import { insertLibroController, updateLibroController, getLibroByIdController, listLibrosController, deleteLibroController } from '../mvc/LibroController.js'
+import { insertLibroController, updateLibroController, getLibroByIdController, listLibrosController, deleteLibroController, searchLibrosController } from '../mvc/LibroController.js'
 
 const router = express.Router()
 const upload = multer({
@@ -18,8 +18,13 @@ const upload = multer({
 //routes libro
 router.post('/libros', upload.fields([{ name: 'portada' }, { name: 'pdf' }]), insertLibroController)
 router.put('/libros', upload.fields([{ name: 'portada' }, { name: 'pdf' }]), updateLibroController)
+//Busca libros por nombre (debe ir antes de :id para evitar colisión)
+router.get('/libros/search/:nombre', searchLibrosController)
+router.get('/libros/search', searchLibrosController)
 router.get('/libros/:id', getLibroByIdController)
 router.get('/libros', listLibrosController)
 router.delete('/libros/:id', deleteLibroController)
+
+
 
 export default router

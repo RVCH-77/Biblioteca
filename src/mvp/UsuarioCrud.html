@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biblioteca CRUD - Gestor de Libros</title>
+  <title>Biblioteca CRUD - Gestor de Usuarios</title>
   <style>
     * {
       margin: 0;
@@ -47,8 +47,22 @@
       border-bottom: 2px solid var(--border);
     }
 
-    .header-actions { display: flex; justify-content: flex-end; margin-bottom: 10px; }
-    .nav-home { display: inline-block; padding: 8px 14px; border-radius: 8px; background: var(--primary-light); color: #fff; text-decoration: none; font-weight: 600; transition: all 0.2s ease; }
+    .header-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+
+    .nav-home {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 8px;
+      background: var(--primary-light);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
     .nav-home:hover { background: var(--primary); transform: translateY(-1px); }
 
     h1 {
@@ -82,7 +96,8 @@
       color: var(--accent-light);
     }
 
-    #formLibro {
+    #formLibro,
+    #formUsuario {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
@@ -185,16 +200,19 @@
       color: var(--accent-light);
     }
 
-    #tablaLibros {
+    #tablaLibros,
+    #tablaUsuarios {
       width: 100%;
       border-collapse: collapse;
     }
 
-    #tablaLibros thead {
+    #tablaLibros thead,
+    #tablaUsuarios thead {
       background: var(--bg-tertiary);
     }
 
-    #tablaLibros th {
+    #tablaLibros th,
+    #tablaUsuarios th {
       padding: 16px;
       text-align: left;
       font-weight: 600;
@@ -202,17 +220,20 @@
       border-bottom: 2px solid var(--border);
     }
 
-    #tablaLibros td {
+    #tablaLibros td,
+    #tablaUsuarios td {
       padding: 16px;
       border-bottom: 1px solid var(--border);
       color: var(--text-primary);
     }
 
-    #tablaLibros tbody tr {
+    #tablaLibros tbody tr,
+    #tablaUsuarios tbody tr {
       transition: background 0.3s ease;
     }
 
-    #tablaLibros tbody tr:hover {
+    #tablaLibros tbody tr:hover,
+    #tablaUsuarios tbody tr:hover {
       background: var(--bg-tertiary);
     }
 
@@ -271,7 +292,8 @@
         font-size: 1.8rem;
       }
 
-      #formLibro {
+      #formLibro,
+      #formUsuario {
         grid-template-columns: 1fr;
       }
 
@@ -279,12 +301,15 @@
         grid-column: 1;
       }
 
-      #tablaLibros {
+      #tablaLibros,
+      #tablaUsuarios {
         font-size: 13px;
       }
 
       #tablaLibros th,
-      #tablaLibros td {
+      #tablaUsuarios th,
+      #tablaLibros td,
+      #tablaUsuarios td {
         padding: 12px 8px;
       }
     }
@@ -303,7 +328,7 @@
       opacity: 0.5;
     }
   </style>
-  <script type="module" src="/mvvm/LibroViewModel.js"></script>
+  
 </head>
 <body>
   <div class="container">
@@ -311,56 +336,50 @@
       <div class="header-actions">
         <a class="nav-home" href="/mvp/MenuPrincipalBiblio.html">← Menú Principal</a>
       </div>
-      <h1>Biblioteca Digital</h1>
-      <p class="subtitle">Gestor completo de tu colección de libros</p>
+      <h1>Gestor de Usuarios</h1>
+      <p class="subtitle">Administración de usuarios y roles</p>
     </header>
 
     <div class="form-section">
-      <h2>Agregar o Actualizar Libro</h2>
-      <form id="formLibro">
-        <input type="hidden" id="id_libro">
+      <h2>Agregar o Actualizar Usuario</h2>
+      <form id="formUsuario">
+        <input type="hidden" id="id_usuario">
         
         <label>
-          Nombre del Libro
-          <input id="nombre" type="text" placeholder="Ej: Cien años de soledad" required>
+          Nombre de Usuario
+          <input id="u_nombre" type="text" placeholder="Ej: Juan Pérez" required>
         </label>
 
         <label>
-          Género
-          <input id="genero" type="text" placeholder="Ej: Realismo Mágico" required>
+          Contraseña
+          <input id="u_contrasena" type="text" placeholder="Ej: ******" required>
         </label>
 
         <label>
-          Portada (Imagen)
-          <input id="portada" type="file" accept="image/*">
-          <input id="portadaBase64" type="hidden">
-          <span style="font-size: 12px; color: var(--text-secondary);">Formatos: JPG, PNG</span>
-        </label>
+          Rol (id_rol_fk)
+          <select id="id_rol_fk" required>
+            <option value="">Seleccionar Rol</option>
+          </select>
+          <small class="form-text">Selecciona el rol del usuario</small>
 
-        <label>
-          Archivo PDF
-          <input id="pdf" type="file" accept="application/pdf">
-          <input id="pdfBase64" type="hidden">
-          <span style="font-size: 12px; color: var(--text-secondary);">Solo PDF</span>
         </label>
 
         <div class="button-group">
-          <button type="submit">+ Crear Libro</button>
-          <button type="button" id="btnActualizar">✓ Actualizar</button>
+          <button type="submit">+ Crear Usuario</button>
+          <button type="button" id="btnActualizarUsuario">✓ Actualizar</button>
         </div>
       </form>
     </div>
 
     <div class="table-section">
-      <h2>Mi Colección de Libros</h2>
-      <table id="tablaLibros">
+      <h2>Usuarios</h2>
+      <table id="tablaUsuarios">
         <thead>
           <tr>
             <th>ID</th>
-            <th>Portada</th>
             <th>Nombre</th>
-            <th>Género</th>
-            <th>PDF</th>
+            <th>Contraseña</th>
+            <th>Rol</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -368,5 +387,6 @@
       </table>
     </div>
   </div>
+  <script type="module" src="/mvvm/UsuarioCrudPage.js"></script>
 </body>
 </html>
