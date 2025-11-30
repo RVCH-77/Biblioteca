@@ -70,4 +70,3 @@ export async function getUsuarioByNombre(nombre) {
   }
   return await r.json()
 }
-

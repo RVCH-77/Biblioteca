@@ -21,3 +21,14 @@ export async function listLibros() {
   }
   return rows
 }
+
+//Busca libros por nombre
+export async function searchLibros(nombre) {
+  const sql = 'SELECT id_libro, nombre, genero, portada, pdf FROM Libro WHERE nombre LIKE ? ORDER BY id_libro DESC'
+  const [rows] = await pool.execute(sql, [`%${nombre}%`])
+  for (const r of rows) {
+    if (Buffer.isBuffer(r.portada)) r.portada = r.portada.toString('base64')
+    if (Buffer.isBuffer(r.pdf)) r.pdf = r.pdf.toString('base64')
+  }
+  return rows
+}

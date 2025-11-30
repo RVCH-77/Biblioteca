@@ -5,7 +5,7 @@ import router from '../Routes/LibroApi.js'
 import usuarioRouter from '../Routes/UsuarioApi.js'
 import { listRoles } from '../dao/RolDao.js'
 import RolModel from '../mvc/RolModel.js'
-import { listUsuarios } from '../dao/UsuarioDao.js'
+import { listUsuarios, getUsuarioByNombre } from '../dao/UsuarioDao.js'
 import { insertUsuarioController, updateUsuarioController, deleteUsuarioController, listUsuariosController, getUsuarioByIdController } from '../mvc/UsuarioController.js'
 
 const app = express()
@@ -28,6 +28,19 @@ app.put('/usuarios/:id', updateUsuarioController)
 app.get('/usuarios', listUsuariosController)
 app.get('/usuarios/:id', getUsuarioByIdController)
 app.delete('/usuarios/:id', deleteUsuarioController)
+
+app.post('/usuarios/login', async (req,res)=>{
+  try{
+    const { nombre, contrasena } = req.body || {}
+    const u = await getUsuarioByNombre(nombre)
+    if(!u || String(u.contrasena) !== String(contrasena)){
+      return res.status(401).json({ error: 'invalid_credentials' })
+    }
+    res.json({ id_usuario: u.id_usuario, nombre: u.nombre, id_rol_fk: u.id_rol_fk })
+  }catch(err){
+    res.status(500).json({ error: err?.message || String(err) })
+  }
+})
 
 app.get('/roles', async (req,res)=>{
   try{
