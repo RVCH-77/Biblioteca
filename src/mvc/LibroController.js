@@ -6,9 +6,6 @@ import { join } from 'path'
 import { updateLibro } from '../cqrs/LibroCqrs.js'
 import { deleteLibro } from '../cqrs/LibroCqrs.js'
 
-function isBufferLike(v){
-  return Buffer.isBuffer(v) || (v && typeof v === 'object' && Array.isArray(v.data))
-}
 
 async function ensureBase64(v){
   if (!v) return ''

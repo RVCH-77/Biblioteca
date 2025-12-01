@@ -21,6 +21,7 @@ app.use(usuarioRouter)
 // Archivos estáticos montados bajo prefijos específicos
 app.use('/mvp', express.static(join(__dirname, '../mvp')))
 app.use('/mvvm', express.static(join(process.cwd(), 'src/mvvm')))
+app.use('/ddd', express.static(join(__dirname, '../ddd')))
 app.use('/public', express.static(join(__dirname, '../../public')))
 
 app.post('/usuarios', insertUsuarioController)
@@ -37,6 +38,19 @@ app.post('/usuarios/login', async (req,res)=>{
       return res.status(401).json({ error: 'invalid_credentials' })
     }
     res.json({ id_usuario: u.id_usuario, nombre: u.nombre, id_rol_fk: u.id_rol_fk })
+  }catch(err){
+    res.status(500).json({ error: err?.message || String(err) })
+  }
+})
+
+app.get('/externo/libros', async (req,res)=>{
+  try{
+    const r = await fetch('http://localhost:8080/biblioteca_web/api/libros/buscar')
+    if(!r.ok){
+      return res.status(r.status).send(await r.text())
+    }
+    const data = await r.json()
+    res.json(data)
   }catch(err){
     res.status(500).json({ error: err?.message || String(err) })
   }
