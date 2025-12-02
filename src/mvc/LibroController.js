@@ -30,6 +30,7 @@ async function insertLibroController(req, res) {
   const body = req.body || {}
   const nombre = body.nombre
   const genero = body.genero
+  const universidad = body.universidad
   if (!nombre || !genero) { res.status(400).json({ error: 'nombre y genero requeridos' }); return }
   const portadaFile = req.files?.portada?.[0]
   const pdfFile = req.files?.pdf?.[0]
@@ -39,7 +40,7 @@ async function insertLibroController(req, res) {
   const pdf = pdfFile ? pdfFile.buffer : (typeof pdfBase64 === 'string' ? Buffer.from(pdfBase64, 'base64') : Buffer.alloc(0))
   try {
     const nombreFinal = typeof nombre === 'string' ? (nombre.endsWith(' (URV)') ? nombre : (nombre + ' (URV)')) : nombre
-    const id = await insertLibro({ nombre: nombreFinal, genero, portada, pdf })
+    const id = await insertLibro({ nombre: nombreFinal, genero, universidad, portada, pdf })
     res.status(201).json({ id })
   } catch (error) {
     console.error('insertLibroController error:', error)
@@ -52,6 +53,7 @@ async function updateLibroController(req, res) {
   const id_libro = body.id_libro
   const nombre = body.nombre
   const genero = body.genero
+  let universidad = body.universidad
   const portadaBase64 = body.portadaBase64
   const pdfBase64 = body.pdfBase64
   if (!id_libro || !nombre || !genero) { res.status(400).json({ error: 'id_libro, nombre y genero requeridos' }); return }
@@ -63,6 +65,9 @@ async function updateLibroController(req, res) {
     if (portada === undefined || pdf === undefined) {
       const existing = await getLibroById(id_libro)
       if (!existing) { res.status(404).json({ error: 'Libro no encontrado' }); return }
+      if (universidad == null || universidad === '') {
+        universidad = existing.universidad ?? null
+      }
       if (portada === undefined) {
         const v = existing.portada
         portada = Buffer.isBuffer(v) ? v : (typeof v === 'string' ? Buffer.from(v, 'base64') : Buffer.alloc(0))
@@ -74,7 +79,7 @@ async function updateLibroController(req, res) {
     }
     if (portada == null) portada = Buffer.alloc(0)
     if (pdf == null) pdf = Buffer.alloc(0)
-    const success = await updateLibro({ id_libro, nombre, genero, portada, pdf })
+    const success = await updateLibro({ id_libro, nombre, genero, universidad, portada, pdf })
     if (success) {
       res.status(200).json({ message: 'Libro actualizado correctamente' })
     } else {

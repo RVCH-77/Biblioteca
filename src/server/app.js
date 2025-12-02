@@ -43,9 +43,32 @@ app.post('/usuarios/login', async (req,res)=>{
   }
 })
 
+
+// saltarse la ventana de ngrok para obtener libros externos
+
+
+
+
 app.get('/externo/libros', async (req,res)=>{
   try{
-    const r = await fetch('http://localhost:8080/biblioteca_web/api/libros/buscar')
+    const r = await fetch('https://unillusioned-incompactly-kelsey.ngrok-free.dev/biblioteca_web/api/libros/buscar', {
+      headers: { 'ngrok-skip-browser-warning': 'true' }
+    })
+    if(!r.ok){
+      return res.status(r.status).send(await r.text())
+    }
+    const data = await r.json()
+    res.json(data)
+  }catch(err){
+    res.status(500).json({ error: err?.message || String(err) })
+  }
+})
+// Ruta para obtener libros externos desde ngrok
+app.get('/externo/libros_ngrok', async (req,res)=>{
+  try{
+    const r = await fetch('https://7cc985afbc6f.ngrok-free.app/books/all', {
+      headers: { 'ngrok-skip-browser-warning': 'true' }
+    })
     if(!r.ok){
       return res.status(r.status).send(await r.text())
     }

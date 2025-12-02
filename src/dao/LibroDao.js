@@ -2,7 +2,7 @@ import pool from '../db/DB.js'
 
 
 export async function getLibroById(id) {
-  const sql = 'SELECT id_libro, nombre, genero, portada, pdf FROM Libro WHERE id_libro = ?'
+  const sql = 'SELECT id_libro, nombre, genero, universidad, portada, pdf FROM Libro WHERE id_libro = ?'
   const [rows] = await pool.execute(sql, [id])
   const r = rows[0] || null
   if (r) {
@@ -13,7 +13,7 @@ export async function getLibroById(id) {
 }
 
 export async function listLibros() {
-  const sql = 'SELECT id_libro, nombre, genero, portada, pdf FROM Libro ORDER BY id_libro DESC'
+  const sql = 'SELECT id_libro, nombre, genero, universidad, portada, pdf FROM Libro ORDER BY id_libro DESC'
   const [rows] = await pool.execute(sql)
   for (const r of rows) {
     if (Buffer.isBuffer(r.portada)) r.portada = r.portada.toString('base64')
@@ -24,7 +24,7 @@ export async function listLibros() {
 
 //Busca libros por nombre
 export async function searchLibros(nombre) {
-  const sql = 'SELECT id_libro, nombre, genero, portada, pdf FROM Libro WHERE nombre LIKE ? ORDER BY id_libro DESC'
+  const sql = 'SELECT id_libro, nombre, genero, universidad, portada, pdf FROM Libro WHERE nombre LIKE ? ORDER BY id_libro DESC'
   const [rows] = await pool.execute(sql, [`%${nombre}%`])
   for (const r of rows) {
     if (Buffer.isBuffer(r.portada)) r.portada = r.portada.toString('base64')
