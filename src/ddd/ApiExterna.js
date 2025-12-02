@@ -5,13 +5,14 @@ export const EXTERNAL_ENDPOINTS = {
 
 const BASE_URL = 'http://localhost:8080'
 
+// Funcion para convertir url relativa a absoluta
 function absoluteUrl(u){
   if(!u || typeof u !== 'string') return ''
   if(u.startsWith('http://') || u.startsWith('https://')) return u
   if(u.startsWith('/')) return BASE_URL + u
   return BASE_URL + '/' + u
 }
-
+// Funcion que me ayuda a ver si es una imagen base64
 function isImgBase64(s){
   return typeof s === 'string' && (s.startsWith('/9j') || s.startsWith('iVBOR') || s.startsWith('data:image'))
 }
@@ -19,22 +20,19 @@ function isPdfBase64(s){
   return typeof s === 'string' && (s.startsWith('JVBER') || s.startsWith('data:application/pdf;base64,'))
 }
 
-// Intenta usar el proxy del backend; si falla, hace llamada directa
+
+// Funcion para lista de libros expterno
 export async function listarLibros() {
-  try {
-    const response = await fetch('/externo/libros');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const libros = await response.json();
-    return libros;
-  } catch (error) {
+  try{
+    const r = await fetch(EXTERNAL_ENDPOINTS.listarLibros)
+    if(!r.ok) throw new Error('HTTP '+r.status)
+    return await r.json()
+  }catch(err){
     try{
-      const r = await fetch(EXTERNAL_ENDPOINTS.listarLibros)
-      if(!r.ok) throw new Error('HTTP '+r.status)
-      return await r.json()
-    }catch(err){
-      console.error('Error fetching libros externos:', err);
+      const rp = await fetch('/externo/libros')
+      if(!rp.ok) throw new Error('HTTP '+rp.status)
+      return await rp.json()
+    }catch(err2){
       return []
     }
   }
