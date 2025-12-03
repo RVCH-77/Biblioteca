@@ -1,0 +1,51 @@
+import pool from '../db/DB.js'
+
+
+export async function getLibroById(id) {
+  const sql = 'SELECT id_libro, nombre, genero, universidad, portada, pdf FROM Libro WHERE id_libro = ?'
+  const [rows] = await pool.execute(sql, [id])
+  const r = rows[0] || null
+  if (r) {
+    if (Buffer.isBuffer(r.portada)) r.portada = r.portada.toString('base64')
+    if (Buffer.isBuffer(r.pdf)) r.pdf = r.pdf.toString('base64')
+  }
+  return r
+}
+
+export async function listLibros() {
+  const sql = 'SELECT id_libro, nombre, genero, universidad, portada, pdf FROM Libro ORDER BY id_libro DESC'
+  const [rows] = await pool.execute(sql)
+  for (const r of rows) {
+    if (Buffer.isBuffer(r.portada)) r.portada = r.portada.toString('base64')
+    if (Buffer.isBuffer(r.pdf)) r.pdf = r.pdf.toString('base64')
+  }
+  return rows
+}
+
+//Busca libros por nombre
+export async function searchLibros(nombre) {
+  const sql = 'SELECT id_libro, nombre, genero, universidad, portada, pdf FROM Libro WHERE nombre LIKE ? ORDER BY id_libro DESC'
+  const [rows] = await pool.execute(sql, [`%${nombre}%`])
+  for (const r of rows) {
+    if (Buffer.isBuffer(r.portada)) r.portada = r.portada.toString('base64')
+    if (Buffer.isBuffer(r.pdf)) r.pdf = r.pdf.toString('base64')
+  }
+  return rows
+}
+export async function insertLibro(libro) {
+  const sql = 'INSERT INTO Libro (nombre, genero, universidad, portada, pdf) VALUES (?, ?, ?, ?, ?)'
+  const [result] = await pool.execute(sql, [libro.nombre, libro.genero, libro.universidad ?? null, libro.portada, libro.pdf])
+  return result.insertId
+}
+
+export async function updateLibro(libro) {
+  const sql = 'UPDATE Libro SET nombre = ?, genero = ?, universidad = ?, portada = ?, pdf = ? WHERE id_libro = ?'
+  const [result] = await pool.execute(sql, [libro.nombre, libro.genero, libro.universidad ?? null, libro.portada, libro.pdf, libro.id_libro])
+  return result.affectedRows > 0
+}
+
+export async function deleteLibro(id) {
+  const sql = 'DELETE FROM Libro WHERE id_libro = ?'
+  const [result] = await pool.execute(sql, [id])
+  return result.affectedRows > 0
+}

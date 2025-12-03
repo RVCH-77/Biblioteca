@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biblioteca - Login</title>
+  <style>
+    :root{--primary:#1e3a5f;--primary-light:#2d5a8c;--accent:#10b981;--bg:#0f1117;--bg2:#161b22;--text:#e6edf3;--muted:#8b949e;--border:#30363d}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(135deg,var(--bg) 0%,var(--bg2) 100%);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .card{width:100%;max-width:380px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+    h1{font-size:1.6rem;margin:0 0 6px 0}
+    .subtitle{color:var(--muted);font-size:.95rem;margin-bottom:16px}
+    form{display:grid;gap:14px}
+    label{display:flex;flex-direction:column;gap:6px}
+    input{padding:12px 14px;background:#21262d;border:1px solid var(--border);border-radius:8px;color:var(--text)}
+    input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(16,185,129,.1)}
+    .actions{display:flex;gap:10px;margin-top:6px}
+    .btn{padding:10px 14px;border:none;border-radius:8px;font-weight:600;cursor:pointer}
+    .btn-primary{background:var(--accent);color:#fff;flex:1}
+    .btn-link{background:transparent;color:#fff;border:1px solid var(--border)}
+    .error{color:#f85149;font-size:.9rem;min-height:20px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Ingresar</h1>
+    <p class="subtitle">Accede con tu usuario y contraseña</p>
+    <form id="formLogin">
+      <label>
+        Usuario
+        <input id="login_usuario" type="text" placeholder="Ej: Juan" required>
+      </label>
+      <label>
+        Contraseña
+        <input id="login_contrasena" type="password" placeholder="******" required>
+      </label>
+      <div class="error" id="login_error"></div>
+      <div class="actions">
+        <button type="submit" class="btn btn-primary">Entrar</button>
+        <a class="btn btn-link" href="/mvp/MenuPrincipalBiblio.html">Menú</a>
+      </div>
+    </form>
+  </div>
+  <script type="module" src="/mvvm/LoginPage.js"></script>
+</body>
+</html>

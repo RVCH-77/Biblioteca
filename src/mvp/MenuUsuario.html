@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biblioteca - Menú de Usuario</title>
+  <style>
+    :root { --primary:#2d5a8c; --primary-light:#3b82c4; --accent:#10b981; --bg:#f7f8fa; --bg2:#ffffff; --text:#111827; --muted:#6b7280; --border:#e5e7eb }
+    *{box-sizing:border-box}
+    body{margin:0; font-family:Segoe UI,Roboto,Arial,sans-serif; background:linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%); color:var(--text); padding:20px}
+    .container{max-width:1200px; margin:0 auto}
+    header{margin-bottom:20px; border-bottom:2px solid var(--border); padding:16px 0}
+    .header-actions{display:flex; justify-content:space-between; align-items:center; gap:12px}
+    .nav-home{display:inline-block; padding:8px 12px; border-radius:8px; background:var(--primary); color:#fff; text-decoration:none; font-weight:600}
+    .nav-home:hover{background:var(--primary-light)}
+    h1{font-size:1.8rem; margin:0}
+    .subtitle{color:var(--muted); font-size:0.95rem}
+    .layout{display:grid; grid-template-columns: 1.6fr 1fr; gap:20px}
+    .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:16px}
+    .card{background:var(--bg2); border:1px solid var(--border); border-radius:12px; overflow:hidden; cursor:pointer; transition:transform .2s; position:relative}
+    .card:hover{transform:translateY(-2px)}
+    .cover{width:100%; height:220px; object-fit:cover; background:#eeeeee}
+    .card-body{padding:12px}
+    .title{font-weight:600; font-size:14px; color:var(--text)}
+    .genre{color:var(--muted); font-size:12px}
+    .panel{background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:16px}
+    .panel h2{margin:0 0 8px 0; font-size:1.2rem}
+    .pair{margin:6px 0; font-size:14px}
+    .actions{display:flex; gap:10px; margin-top:12px}
+    .btn{padding:8px 12px; border-radius:8px; border:none; cursor:pointer; font-weight:600}
+    .btn-primary{background:var(--accent); color:#fff}
+    .btn-outline{background:transparent; color:var(--text); border:1px solid var(--border)}
+    .toolbar{display:flex; gap:12px; align-items:center; margin-bottom:12px}
+    .select{padding:8px 10px; border:1px solid var(--border); border-radius:8px; background:#fff; color:var(--text)}
+    .input{padding:8px 10px; border:1px solid var(--border); border-radius:8px; background:#fff; color:var(--text); min-width:220px}
+    .badge{position:absolute; top:8px; right:8px; background:var(--primary); color:#fff; border-radius:999px; padding:4px 8px; font-size:11px; pointer-events:none}
+    @media (max-width: 900px){ .layout{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-actions">
+        <div>
+          <h1>Menú de Usuario</h1>
+          <p class="subtitle">Explora y abre libros de la biblioteca</p>
+        </div>
+        <button id="btnLogout" class="nav-home">← Cerrar Sesión</button>
+      </div>
+    </header>
+    <div class="layout">
+      <section>
+        <div class="toolbar">
+          <label>Mostrar
+            <select id="filtroOrigen" class="select">
+              <option value="todos">Todos</option>
+              <option value="locales">Locales</option>
+              <option value="externos">Externos</option>
+            </select>
+          </label>
+          <label>Buscar
+            <input id="searchLibro" class="input" type="text" placeholder="Escribe un título..." />
+          </label>
+        </div>
+        <div id="gridLibros" class="grid"></div>
+      </section>
+      <aside class="panel" id="detalleLibro">
+        <h2>Detalles del Libro</h2>
+        <div class="pair"><b>Título:</b> <span id="d_titulo">—</span></div>
+        <div class="pair"><b>Género:</b> <span id="d_genero">—</span></div>
+        <div class="pair"><b>Autor (externo):</b> <span id="d_autor">—</span></div>
+        <div class="pair"><b>Año (externo):</b> <span id="d_year">—</span></div>
+        <div class="actions">
+          <button class="btn btn-primary" id="btnAbrirPdf" disabled>Abrir PDF</button>
+          <button class="btn btn-outline" id="btnBuscarInfo" disabled>Actualizar info externa</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <script type="module" src="/mvvm/MenuUsuarioPage.js"></script>
+</body>
+</html>
