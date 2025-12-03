@@ -1,34 +1,34 @@
 # 📚 Proyecto: Biblioteca Universal
 
 ## 📖 Descripción General 
-[cite_start]Este proyecto consiste en una plataforma digital diseñada para la interconexión de bibliotecas virtuales universitarias[cite: 6]. [cite_start]El objetivo principal es permitir que los estudiantes accedan a un repositorio global de conocimientos, consultando libros tanto de su propia universidad como de universidades externas conectadas a la red[cite: 9, 11].
+Este proyecto consiste en una plataforma digital diseñada para la interconexión de bibliotecas virtuales universitarias[cite: 6].El objetivo principal es permitir que los estudiantes accedan a un repositorio global de conocimientos, consultando libros tanto de su propia universidad como de universidades externas conectadas a la red[cite: 9, 11].
 
-[cite_start]El sistema permite la búsqueda centralizada, mostrando resultados con portada y metadatos, y facilita la lectura de documentos PDF directamente en el navegador mediante transmisión en Base64[cite: 19, 81].
+El sistema permite la búsqueda centralizada, mostrando resultados con portada y metadatos, y facilita la lectura de documentos PDF directamente en el navegador mediante transmisión en Base64[cite: 19, 81].
 
 ## 🚀 Funcionalidades Principales 
 
 ### 👤 Módulo de Bibliotecario 
-* [cite_start]**Gestión de Usuarios:** CRUD completo (Crear, Leer, Actualizar, Borrar) de usuarios internos[cite: 32]. 
-* [cite_start]**Gestión de Libros:** CRUD de libros del catálogo local (Título, género, portada y archivo PDF)[cite: 33, 49]. 
-* [cite_start]*Nota: Solo gestiona datos locales, sin acceso a edición externa[cite: 38, 47].* 
+* **Gestión de Usuarios:** CRUD completo (Crear, Leer, Actualizar, Borrar) de usuarios internos[cite: 32]. 
+* **Gestión de Libros:** CRUD de libros del catálogo local (Título, género, portada y archivo PDF)[cite: 33, 49]. 
+* *Nota: Solo gestiona datos locales, sin acceso a edición externa[cite: 38, 47].* 
 
 ### 🎓 Módulo de Alumno 
-* [cite_start]**Buscador Global:** Consulta unificada de libros internos y externos[cite: 53, 56]. 
-* [cite_start]**Visualización:** Despliegue de libros PDF en el navegador[cite: 81]. 
+* **Buscador Global:** Consulta unificada de libros internos y externos[cite: 53, 56]. 
+* **Visualización:** Despliegue de libros PDF en el navegador[cite: 81].  
 
 ## 🏗️ Arquitectura y Patrones de Diseño 
-[cite_start]Este proyecto se rige por una arquitectura estricta de N-Capas, implementando los siguientes patrones de diseño de software[cite: 130]: 
+Este proyecto se rige por una arquitectura estricta de N-Capas, implementando los siguientes patrones de diseño de software[cite: 130]: 
 
-* [cite_start]**MVC (Model-View-Controller):** Estructura base para la separación de la lógica de presentación y control[cite: 29]. 
-* [cite_start]**DAO (Data Access Object):** Capa exclusiva para realizar consultas a la base de datos (Lectura)[cite: 110]. 
-* [cite_start]**CQRS (Command Query Responsibility Segregation):** Separación de responsabilidades; utiliza *Commands* para operaciones de escritura (Registro, Edición, Eliminación) y delega las lecturas al DAO[cite: 37, 112]. 
-* [cite_start]**MVVM (Model-View-ViewModel):** Utilizado para el mapeo de datos hacia la vista, asegurando que no exista lógica de negocio en la presentación[cite: 54, 120]. 
-* [cite_start]**DDD (Domain-Driven Design):** Enfoque en el dominio, implementando una capa de infraestructura (`ApiService`) para la comunicación con APIs de universidades externas[cite: 60, 126]. 
+* **MVC (Model-View-Controller):** Estructura base para la separación de la lógica de presentación y control[cite: 29]. 
+* **DAO (Data Access Object):** Capa exclusiva para realizar consultas a la base de datos (Lectura)[cite: 110]. 
+* **CQRS (Command Query Responsibility Segregation):** Separación de responsabilidades; utiliza *Commands* para operaciones de escritura (Registro, Edición, Eliminación) y delega las lecturas al DAO[cite: 37, 112].  
+* **MVVM (Model-View-ViewModel):** Utilizado para el mapeo de datos hacia la vista, asegurando que no exista lógica de negocio en la presentación[cite: 54, 120]. 
+* **DDD (Domain-Driven Design):** Enfoque en el dominio, implementando una capa de infraestructura (`ApiService`) para la comunicación con APIs de universidades externas[cite: 60, 126].     
 
 ## ⚙️ Reglas de Implementación 
-* [cite_start]**Interoperabilidad:** El sistema consume servicios de otros compañeros para poblar la biblioteca global. 
-* [cite_start]**Manejo de Archivos:** Envío y recepción de PDFs estandarizados en formato Base64[cite: 81]. 
-* [cite_start]**Seguridad:** Validación de roles (Bibliotecario vs. Alumno) al iniciar sesión[cite: 30]. 
+* **Interoperabilidad:** El sistema consume servicios de otros compañeros para poblar la biblioteca global. 
+* **Manejo de Archivos:** Envío y recepción de PDFs estandarizados en formato Base64[cite: 81]. 
+* **Seguridad:** Validación de roles (Bibliotecario vs. Alumno) al iniciar sesión[cite: 30]. 
 
 ## 🛠️ Stack Tecnológico 
 * [Lenguaje de programación, ej. Java/C#] 
