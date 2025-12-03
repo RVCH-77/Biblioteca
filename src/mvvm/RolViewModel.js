@@ -1,5 +1,5 @@
 // ViewModel cliente para Roles
-export async function listRoles() {
+export async function listRolesCqrs() {
   const r = await fetch('/roles')
   if(!r.ok){
     const msg = await r.text()
@@ -9,7 +9,7 @@ export async function listRoles() {
 }
 
 export async function populateRolesSelect(selectEl) {
-  const roles = await listRoles()
+  const roles = await listRolesCqrs()
   const current = selectEl.value
   selectEl.innerHTML = '<option value="">Seleccionar Rol</option>'
   for(const rol of roles){
@@ -21,4 +21,4 @@ export async function populateRolesSelect(selectEl) {
   if(current) selectEl.value = current
 }
 
-export default { listRoles, populateRolesSelect }
+// Exportaciones por nombre; no se usa export default

@@ -106,6 +106,13 @@ function renderList(arr){
   grid.innerHTML = ''
   const q = searchQuery.toLowerCase()
   const filtered = q ? arr.filter(l => String(l?.nombre||'').toLowerCase().includes(q) || String(l?.genero||'').toLowerCase().includes(q)) : arr
+  if(!filtered.length){
+    const empty = document.createElement('div')
+    empty.className = 'empty-state'
+    empty.innerHTML = '<p>No hay libros para mostrar</p>'
+    grid.appendChild(empty)
+    return
+  }
   for(const l of filtered){ grid.appendChild(renderCard(l)) }
 }
 
@@ -120,29 +127,35 @@ function applyFilter(){
 }
 
 async function load(){
-  const [librosLocales, librosExternosRaw] = await Promise.all([
-    json('/libros'),
-    cargarLibrosExternos().catch(()=>[])
-  ])
-  librosLocalesCache = Array.isArray(librosLocales) ? librosLocales : []
-  librosExternosCache = Array.isArray(librosExternosRaw) ? librosExternosRaw : []
-  externalLoaded = librosExternosCache.length > 0
-  const map = new Map()
-  for(const l of librosLocalesCache){
-    map.set(keyOf(l), l)
-  }
-  for(const e of librosExternosCache){
-    const k = keyOf(e)
-    const ex = map.get(k)
-    if(ex){
-      if(!toBase64(ex.portada) && e._imgUrl) ex._imgUrl = e._imgUrl
-      if(!toBase64(ex.pdf) && e._pdfUrl) ex._pdfUrl = e._pdfUrl
-      if(!ex.genero && e.genero) ex.genero = e.genero
-    }else{
-      map.set(k, e)
+  try{
+    const [librosLocales, librosExternosRaw] = await Promise.all([
+      json('/libros'),
+      cargarLibrosExternos().catch(()=>[])
+    ])
+    librosLocalesCache = Array.isArray(librosLocales) ? librosLocales : []
+    librosExternosCache = Array.isArray(librosExternosRaw) ? librosExternosRaw : []
+    externalLoaded = librosExternosCache.length > 0
+    const map = new Map()
+    for(const l of librosLocalesCache){
+      map.set(keyOf(l), l)
     }
+    for(const e of librosExternosCache){
+      const k = keyOf(e)
+      const ex = map.get(k)
+      if(ex){
+        if(!toBase64(ex.portada) && e._imgUrl) ex._imgUrl = e._imgUrl
+        if(!toBase64(ex.pdf) && e._pdfUrl) ex._pdfUrl = e._pdfUrl
+        if(!ex.genero && e.genero) ex.genero = e.genero
+      }else{
+        map.set(k, e)
+      }
+    }
+    combinadosCache = Array.from(map.values())
+  }catch{
+    librosLocalesCache = []
+    librosExternosCache = []
+    combinadosCache = []
   }
-  combinadosCache = Array.from(map.values())
   applyFilter()
 }
 

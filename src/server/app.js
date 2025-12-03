@@ -51,9 +51,7 @@ app.post('/usuarios/login', async (req,res)=>{
 
 app.get('/externo/libros', async (req,res)=>{
   try{
-    const r = await fetch('https://unillusioned-incompactly-kelsey.ngrok-free.dev/biblioteca_web/api/libros/buscar', {
-      headers: { 'ngrok-skip-browser-warning': 'true' }
-    })
+    const r = await fetch('http://192.168.137.165:8080/biblioteca_web/api/libros/buscarpbc')
     if(!r.ok){
       return res.status(r.status).send(await r.text())
     }
@@ -66,9 +64,7 @@ app.get('/externo/libros', async (req,res)=>{
 // Ruta para obtener libros externos desde ngrok
 app.get('/externo/libros_ngrok', async (req,res)=>{
   try{
-    const r = await fetch('https://7cc985afbc6f.ngrok-free.app/books/all', {
-      headers: { 'ngrok-skip-browser-warning': 'true' }
-    })
+    const r = await fetch('http://192.168.137.67:3000/books/all')
     if(!r.ok){
       return res.status(r.status).send(await r.text())
     }

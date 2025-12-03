@@ -48,6 +48,7 @@ async function submit(e){
     fd.append('nombre', nombreFinal)
   }
   fd.append('genero', q('#genero').value)
+  fd.append('universidad', q('#universidad').value)
   const portadaFile = q('#portada').files[0]
   const pdfFile = q('#pdf').files[0]
   if(id) fd.append('id_libro', id)
@@ -73,6 +74,7 @@ async function onTable(e){
     q('#id_libro').value = l.id_libro
     q('#nombre').value = l.nombre
     q('#genero').value = l.genero
+    q('#universidad').value = l.universidad || ''
     q('#portadaBase64').value = toBase64(l.portada)
     q('#pdfBase64').value = toBase64(l.pdf)
   } else if(e.target.classList.contains('delete')){
@@ -96,6 +98,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       fd.append('nombre', nombreFinal)
     }
     fd.append('genero', q('#genero').value)
+    fd.append('universidad', q('#universidad').value)
     const portadaFile = q('#portada').files[0]
     const pdfFile = q('#pdf').files[0]
     if(portadaFile) fd.append('portada', portadaFile)

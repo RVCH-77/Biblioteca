@@ -1,10 +1,13 @@
-import { insertLibro } from '../cqrs/LibroCqrs.js'
-import { getLibroById } from '../dao/LibroDao.js'
-import { listLibros } from '../dao/LibroDao.js'
+
 import { readFile } from 'fs/promises'
 import { join } from 'path'
-import { updateLibro } from '../cqrs/LibroCqrs.js'
-import { deleteLibro } from '../cqrs/LibroCqrs.js'
+import { deleteLibroCqrs } from '../cqrs/LibroCqrs.js'
+import { insertLibroCqrs } from '../cqrs/LibroCqrs.js'
+import { updateLibroCqrs } from '../cqrs/LibroCqrs.js'
+import { listLibrosCqrs } from '../dao/LibroDao.js'
+import { getLibroByIdCqrs } from '../dao/LibroDao.js'
+import { searchLibrosCqrs } from '../dao/LibroDao.js'
+
 
 
 async function ensureBase64(v){
@@ -40,7 +43,7 @@ async function insertLibroController(req, res) {
   const pdf = pdfFile ? pdfFile.buffer : (typeof pdfBase64 === 'string' ? Buffer.from(pdfBase64, 'base64') : Buffer.alloc(0))
   try {
     const nombreFinal = typeof nombre === 'string' ? (nombre.endsWith(' (URV)') ? nombre : (nombre + ' (URV)')) : nombre
-    const id = await insertLibro({ nombre: nombreFinal, genero, universidad, portada, pdf })
+    const id = await insertLibroCqrs({ nombre: nombreFinal, genero, universidad, portada, pdf })
     res.status(201).json({ id })
   } catch (error) {
     console.error('insertLibroController error:', error)
@@ -63,7 +66,7 @@ async function updateLibroController(req, res) {
   let pdf = pdfFile ? pdfFile.buffer : (typeof pdfBase64 === 'string' ? Buffer.from(pdfBase64, 'base64') : undefined)
   try {
     if (portada === undefined || pdf === undefined) {
-      const existing = await getLibroById(id_libro)
+      const existing = await getLibroByIdCqrs(id_libro)
       if (!existing) { res.status(404).json({ error: 'Libro no encontrado' }); return }
       if (universidad == null || universidad === '') {
         universidad = existing.universidad ?? null
@@ -79,7 +82,7 @@ async function updateLibroController(req, res) {
     }
     if (portada == null) portada = Buffer.alloc(0)
     if (pdf == null) pdf = Buffer.alloc(0)
-    const success = await updateLibro({ id_libro, nombre, genero, universidad, portada, pdf })
+    const success = await updateLibroCqrs({ id_libro, nombre, genero, universidad, portada, pdf })
     if (success) {
       res.status(200).json({ message: 'Libro actualizado correctamente' })
     } else {
@@ -94,7 +97,7 @@ async function updateLibroController(req, res) {
 async function getLibroByIdController(req, res) {
   const { id } = req.params
   try {
-    const libro = await getLibroById(id)
+    const libro = await getLibroByIdCqrs(id)
     if (libro) {
       libro.portada = await ensureBase64(libro.portada)
       libro.pdf = await ensureBase64(libro.pdf)
@@ -110,7 +113,7 @@ async function getLibroByIdController(req, res) {
 async function listLibrosController(req, res) {
   try {
     const qn = (req.query?.nombre || '').toLowerCase()
-    const all = await listLibros()
+    const all = await listLibrosCqrs()
     const libros = qn ? all.filter(l => (l.nombre || '').toLowerCase().includes(qn)) : all
     for (const libro of libros) {
       libro.portada = await ensureBase64(libro.portada)
@@ -135,7 +138,7 @@ export {
 async function deleteLibroController(req, res) {
   const { id } = req.params
   try {
-    const success = await deleteLibro(id)
+    const success = await deleteLibroCqrs(id)
     if (success) {
       res.status(200).json({ message: 'Libro eliminado' })
     } else {
@@ -150,7 +153,7 @@ async function deleteLibroController(req, res) {
 async function searchLibrosController(req, res) {
   const nombre = (req.params?.nombre || req.query?.nombre || '').toLowerCase()
   try {
-    const todos = await listLibros()
+    const todos = await listLibrosCqrs()
     const libros = todos.filter(l => (l.nombre || '').toLowerCase().includes(nombre))
     for (const libro of libros) {
       libro.portada = await ensureBase64(libro.portada)

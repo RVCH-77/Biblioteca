@@ -1,7 +1,7 @@
 // Configuración centralizada de endpoints externos
 export const EXTERNAL_ENDPOINTS = {
-  listarLibros: 'https://7cc985afbc6f.ngrok-free.app/books/all', 
-  listarLibros2: 'https://unillusioned-incompactly-kelsey.ngrok-free.dev/biblioteca_web/api/libros/buscar'
+  listarLibros: 'http://192.168.137.67:3000/books/all', 
+  listarLibros2: 'http://192.168.137.230:8080/api/books/public',
 }
 
 function baseFromEndpoint(){
@@ -42,10 +42,9 @@ export async function listarLibros() {
     }
   }
   if(all.length) return all
-  const headers = { 'ngrok-skip-browser-warning': 'true' }
   const reqs = [
-    fetch(EXTERNAL_ENDPOINTS.listarLibros, { headers }).catch(()=>null),
-    fetch(EXTERNAL_ENDPOINTS.listarLibros2, { headers }).catch(()=>null)
+    fetch(EXTERNAL_ENDPOINTS.listarLibros).catch(()=>null),
+    fetch(EXTERNAL_ENDPOINTS.listarLibros2).catch(()=>null)
   ]
   const res = await Promise.allSettled(reqs)
   for(const r of res){
@@ -63,11 +62,19 @@ export function normalizarLibrosExternos(lista) {
   return lista.map((e, idx)=>({
     id_libro: e.id_libro || e.id || (`ext-${idx}`),
     nombre: e.nombre || e.titulo || e.title || 'Sin título',
-    genero: e.genero || e.categoria || e.category || '',
-    portada: isImgBase64(e.portada) ? e.portada : null,
-    pdf: isPdfBase64(e.pdf) ? (e.pdf.startsWith('data:') ? e.pdf.replace('data:application/pdf;base64,','') : e.pdf) : null,
-    _imgUrl: absoluteUrl(e.portadaUrl || e.portada_url || (!isImgBase64(e.portada) ? e.portada : '') || e.imagen || e.imageUrl || e.img || ''),
-    _pdfUrl: absoluteUrl(e.pdfUrl || e.pdf_url || (!isPdfBase64(e.pdf) ? e.pdf : '') || e.archivo || e.fileUrl || ''),
+    genero: e.genero || e.categoria || e.category || e.genre || '',
+    portada: isImgBase64(e.portada) ? e.portada : (isImgBase64(e.cover) ? e.cover : null),
+    pdf: isPdfBase64(e.pdf) ? (e.pdf.startsWith('data:') ? e.pdf.replace('data:application/pdf;base64,','') : e.pdf)
+        : (isPdfBase64(e.file) ? (String(e.file).startsWith('data:') ? String(e.file).replace('data:application/pdf;base64,','') : e.file) : null),
+    _imgUrl: absoluteUrl(
+      e.portadaUrl || e.portada_url || (!isImgBase64(e.portada) ? e.portada : '') ||
+      e.coverUrl || e.cover_url || (!isImgBase64(e.cover) ? e.cover : '') ||
+      e.imagen || e.imageUrl || e.img || ''
+    ),
+    _pdfUrl: absoluteUrl(
+      e.pdfUrl || e.pdf_url || (!isPdfBase64(e.pdf) ? e.pdf : '') ||
+      e.archivo || e.fileUrl || (!isPdfBase64(e.file) ? e.file : '') || ''
+    ),
     _externo: true
   }))
 }
@@ -85,12 +92,5 @@ export async function cargarLibrosExternos2(){
 
 // Busca autor y año por título desde el backend
 export async function buscarInfoPorTitulo(title){
-  try{
-    const endpoint = `${EXTERNAL_ENDPOINTS.buscarInfoPorTitulo}?title=${encodeURIComponent(title || '')}`
-    const r = await fetch(endpoint)
-    if(!r.ok) throw new Error('HTTP '+r.status)
-    const data = await r.json()
-    const doc = data?.docs?.[0]
-    return { autor: doc?.author_name?.[0] || '—', year: doc?.first_publish_year || '—' }
-  }catch{ return { autor:'—', year:'—' } }
+  return { autor:'—', year:'—' }
 }

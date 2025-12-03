@@ -1,19 +1,32 @@
 import pool from '../db/DB.js'
+import { insertLibro, updateLibro, deleteLibro } from '../dao/LibroDao.js'
 
-export async function insertLibro(libro) {
-  const sql = 'INSERT INTO Libro (nombre, genero, universidad, portada, pdf) VALUES (?, ?, ?, ?, ?)'
-  const [result] = await pool.execute(sql, [libro.nombre, libro.genero, libro.universidad ?? null, libro.portada, libro.pdf])
-  return result.insertId
+// CQRS para Libro
+export async function insertLibroCqrs(libro) {
+  return insertLibro(libro) 
+
+}   
+
+
+export async function updateLibroCqrs(libro) {
+  return updateLibro(libro)
 }
 
-export async function updateLibro(libro) {
-  const sql = 'UPDATE Libro SET nombre = ?, genero = ?, universidad = ?, portada = ?, pdf = ? WHERE id_libro = ?'
-  const [result] = await pool.execute(sql, [libro.nombre, libro.genero, libro.universidad ?? null, libro.portada, libro.pdf, libro.id_libro])
-  return result.affectedRows > 0
+export async function deleteLibroCqrs(id) {
+  return deleteLibro(id)
 }
 
-export async function deleteLibro(id) {
-  const sql = 'DELETE FROM Libro WHERE id_libro = ?'
-  const [result] = await pool.execute(sql, [id])
-  return result.affectedRows > 0
+export async function getLibroByIdCqrs(id) {
+  return getLibroById(id)
+}
+
+export async function getLibrosCqrs() {
+  return getLibros()
+}
+
+export async function getLibrosByGeneroCqrs(genero) {
+  return getLibrosByGenero(genero)
+}
+export async function getLibrosByUniversidadCqrs(universidad) {
+  return getLibrosByUniversidad(universidad)
 }

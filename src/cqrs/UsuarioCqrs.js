@@ -1,20 +1,38 @@
-import pool from '../db/DB.js'
-
-// Insertar un usuario
-export async function insertUsuario(usuario) {
-  const query = 'INSERT INTO Usuario (nombre, contrasena, id_rol_fk) VALUES (?, ?, ?)'
-  const [result] = await pool.execute(query, [usuario.nombre, usuario.contrasena, usuario.id_rol_fk])
-  return result.insertId
+import { insertUsuario, updateUsuario, deleteUsuario, getUsuarioById, getUsuarios, getUsuariosByRol, getUsuarioByNombre, getUsuarioByNombreAndContrasena, getUsuariosByNombre, getUsuariosByRolAndNombre } from '../dao/UsuarioDao.js'
+// CQRS para Usuario
+export async function insertUsuarioCqrs(usuario) {
+  return insertUsuario(usuario) 
+}   
+export async function updateUsuarioCqrs(usuario) {
+  return updateUsuario(usuario)
+}
+export async function deleteUsuarioCqrs(id) {
+  return deleteUsuario(id)
+}
+export async function getUsuarioByIdCqrs(id) {
+  return getUsuarioById(id)
+}
+export async function getUsuariosCqrs() {
+  return getUsuarios()
+}
+export async function getUsuariosByRolCqrs(rol) {
+  return getUsuariosByRol(rol)
+}
+export async function getUsuarioByNombreCqrs(nombre) {
+  return getUsuarioByNombre(nombre)
+}
+export async function getUsuarioByNombreAndContrasenaCqrs(nombre, contrasena) {
+  return getUsuarioByNombreAndContrasena(nombre, contrasena)
+}
+export async function getUsuariosByNombreCqrs(nombre) {
+  return getUsuariosByNombre(nombre)
+}
+export async function getUsuariosByRolAndNombreCqrs(rol, nombre) {
+  return getUsuariosByRolAndNombre(rol, nombre)
 }
 
-export async function updateUsuario(usuario) {
-  const query = 'UPDATE Usuario SET nombre = ?, contrasena = ?, id_rol_fk = ? WHERE id_usuario = ?'
-  const [result] = await pool.execute(query, [usuario.nombre, usuario.contrasena, usuario.id_rol_fk, usuario.id_usuario])
-  return result.affectedRows > 0
-}
 
-export async function deleteUsuario(id) {
-  const query = 'DELETE FROM Usuario WHERE id_usuario = ?'
-  const [result] = await pool.execute(query, [id])
-  return result.affectedRows > 0
-}
+
+
+
+
